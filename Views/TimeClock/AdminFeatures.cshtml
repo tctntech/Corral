@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Admin Time Clock Feature";
+}
+
+<div class="container mt-4 text-center">
+    <h2>Time Clock Admin Features</h2>
+
+    <div class="row justify-content-center">
+        <!-- Left Panel: Employee List -->
+        <div class="col-md-5 border-right" style="max-height: 500px; overflow-y: auto;">
+            <h4>Employee List</h4>
+            <ul class="list-group" id="employeeList">
+                <!-- Employee names will be loaded dynamically -->
+            </ul>
+        </div>
+    
+      <!-- Right Panel: Time Clock Features -->
+
+        <div class="col-md-5">
+            <h4>Time Paid (Hrs): <span id="totalHours">0.00</span></h4>
+
+      <!-- Date Filters -->
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="startDate">Beginning Date:</label>
+                    
+                    <input type="date" id="startDate" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label for="endDate">Ending Date:</label>
+                    <input type="date" id="endDate" class="form-control" />
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="reQuery()">Re Query >></button>
+            <button class="btn btn-info mt-2" onclick="timePunchDetail()">Time Punch Detail and Summary</button>
+
+            <!-- Time Clock Entries Table -->
+
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Store ID</th>
+                            <th>Rate</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Approved</th>
+                            <th>Approved By</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timeClockTableBody">
+                        <!-- Data will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add a new entry button -->
+
+    <button class="btn btn-success mt-3" onclick="addNewEntry()">Add a new entry</button>
+</div>
+
+<script>
+    let selectedEmployeeId = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchEmployeeList();
+    });
+
+      function fetchEmployeeList() {
+        fetch('http://localhost:5050/api/timeclock/employees')
+            .then(response => response.json())
+            .then(data => {
+                const employeeList = document.getElementById('employeeList');
+                data.forEach(employee => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = employee.EmployeeName;
+                    li.onclick = () => {
+                        selectedEmployeeId = employee.EmployeeID;
+                        fetchTimeClockEntries();
+                    };
+                    employeeList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching employee list:', error));
+    }
+
+
+    function selectEmployee(employeeId, employeeName) {
+        selectedEmployeeId = employeeId;
+        document.getElementById("totalHours").textContent = "0.00"; // Reset total
+        fetchTimeClockEntries();
+    }
+
+    function reQuery() {
+        if (!selectedEmployeeId) {
+            alert("Please select an employee first.");
+            return;
+        }
+
+        let startDate = document.getElementById("startDate").value;
+        let endDate = document.getElementById("endDate").value;
+
+        fetchTimeClockEntries(startDate, endDate);
+    }
+
+    function fetchTimeClockEntries(startDate = null, endDate = null) {
+        if (!selectedEmployeeId) {
+            alert("Please select an employee first.");
+            return;
+        }
+
+        let url = `api/timeclock/entries?employeeId=${selectedEmployeeId}`;
+        if (startDate && endDate) {
+            url += `&startDate=${startDate}&endDate=${endDate}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("timeClockTableBody");
+                tableBody.innerHTML = "";
+
+                data.data.forEach(entry => {
+                    let row = document.createElement("tr");
+
+                    let timeIn = new Date(entry.serverTimeIn).toLocaleString();
+                    let timeOut = entry.serverTimeOut && entry.serverTimeOut !== "0000-00-00T00:00:00Z"
+                        ? new Date(entry.serverTimeOut).toLocaleString()
+                        : "N/A";
+
+                    let approved = entry.approved ? "Yes" : "No";
+                    let approvedBy = entry.approvedByName && entry.approvedByName.trim() ? entry.approvedByName : "N/A";
+
+                    row.innerHTML = `
+                        <td>${entry.employeeName}</td>
+                        <td>${entry.storeID}</td>
+                        <td>${entry.rate ? entry.rate.toFixed(2) : "0.00"}</td>
+                        <td>${timeIn}</td>
+                        <td>${timeOut}</td>
+                        <td>${approved}</td>
+                        <td>${approvedBy}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Error loading time clock entries:", error));
+    }
+
+    function addNewEntry() {
+        alert("Feature to add new entry will be implemented soon.");
+    }
+
+    function timePunchDetail() {
+        alert("Feature to show time punch details will be implemented soon.");
+    }
+</script>

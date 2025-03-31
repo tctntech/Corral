@@ -1,0 +1,11 @@
+Properties/
+bin/
+wwwroot/
+v17/
+debug/
+obj/
+.csproj
+.slnx.sqlite
+.vs
+appsettings.json
+corral.sln

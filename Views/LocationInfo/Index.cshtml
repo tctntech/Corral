@@ -1,0 +1,131 @@
+﻿@model List<Corral.Models.StoreLocation>
+
+<h2 class="text-center">Store Locations</h2>
+
+<!-- Custom CSS for Table Borders -->
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid black !important;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+</style>
+
+<!-- Scrollable Table Wrapper -->
+<div class="table-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Store #</th>
+                <th>Store Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Zip Code</th>
+                <th>Phone</th>
+                <th>Fax</th>
+                <th>Amex Fee</th>
+                <th>Corporate</th>
+                <th>Tax Profile</th>
+                <th>Active</th>
+                <th>Merchant ID</th>
+                <th>Client ID</th>
+                <th>Terminal ID</th>
+                <th>Visa</th>
+                <th>Amex</th>
+                <th>Discover</th>
+                <th>CC User</th>
+                <th>CC Pass</th>
+                <th>CC Reg #</th>
+                <th>CC Unlock</th>
+                <th>DDHL Name</th>
+                <th>Tip Allocation</th>
+                <th>Min Wage</th>
+                <th>Payroll ID</th>
+                <th>Manage Menu</th>
+                <th>Back Bank</th>
+                <th>Bar Bank</th>
+                <th>Vend Bank</th>
+                <th>End of Lunch</th>
+                <th>Tax ID</th>
+                <th>Legal Name</th>
+                <th>DD Version</th>
+                <th>Prior Year Data</th>
+                <th>Menu Template</th>
+                <th>Company Type</th>
+                <th>Concept ID</th>
+                <th>Open Date</th>
+                <th>Close Date</th>
+                <th>HL Serial</th>
+                <th>Local DB String</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var store in Model)
+            {
+                <tr>
+                    <td>@store.StoreNumber</td>
+                    <td>@store.StoreName</td>
+                    <td>@store.Address</td>
+                    <td>@store.City</td>
+                    <td>@store.State</td>
+                    <td>@store.ZipCode</td>
+                    <td>@(string.IsNullOrEmpty(store.PhoneNumber) ? "N/A" : store.PhoneNumber)</td>
+                    <td>@(string.IsNullOrEmpty(store.FaxNumber) ? "N/A" : store.FaxNumber)</td>
+                    <td>@store.AmexFee</td>
+                    <td>@store.Corporate</td>
+                    <td>@store.TaxProfile</td>
+                    <td>@(store.Active ? "Yes" : "No")</td>
+                    <td>@store.MerchantID</td>
+                    <td>@store.ClientID</td>
+                    <td>@store.TerminalID</td>
+                    <td>@(store.VisaMCMerchant ? "Yes" : "No")</td>
+                    <td>@(store.AmexMerchant ? "Yes" : "No")</td>
+                    <td>@(store.DiscoverMerchant ? "Yes" : "No")</td>
+                    <td>@store.CCUserName</td>
+                    <td>@store.CCPassword</td>
+                    <td>@store.CCRegistrationNumber</td>
+                    <td>@store.CCUnlockCode</td>
+                    <td>@store.DDHLName</td>
+                    <td>@store.TipAllocation</td>
+                    <td>@store.MinimumWage</td>
+                    <td>@store.PayrollID</td>
+                    <td>@store.ManageMenu</td>
+                    <td>@store.BackBankValue</td>
+                    <td>@store.BarBankValue</td>
+                    <td>@store.VendBankValue</td>
+                    <td>@store.EndOfLunch</td>
+                    <td>@store.FederalTaxID</td>
+                    <td>@store.LegalName</td>
+                    <td>@store.DDVersion</td>
+                    <td>@(store.HasUsablePriorYearData ? "Yes" : "No")</td>
+                    <td>@store.StoreIDMenuTemplate</td>
+                    <td>@store.CompanyType</td>
+                    <td>@store.ConceptID</td>
+                    <td>@store.OpenDate.ToString("MM/dd/yyyy")</td>
+                    <td>@store.CloseDate.ToString("MM/dd/yyyy")</td>
+                    <td>@store.HLSerialNumber</td>
+                    <td>@store.LocalDBConnectionString</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Back Button -->
+<a href="@Url.Action("Index", "AdminDashboard")" class="btn btn-secondary mt-3">Close
+
+</a>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/styles.css" /> <!-- Link to your CSS -->
+    <link rel="stylesheet" href="~/css/custom-theme.css" asp-append-version="true" />
+    <script src="~/js/custom.js" asp-append-version="true"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <!-- Optional Header Section -->
+        </div>
+    </header>
+
+    <main>
+        @RenderBody() <!-- Renders the view content -->
+    </main>
+
+    <footer>
+        <!-- Footer content -->
+    </footer>
+
+    <!-- Ensure to render the Scripts section if defined in views -->
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

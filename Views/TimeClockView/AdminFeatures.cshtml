@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Admin Time Clock Feature";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="font-size: 2rem; color: #007bff;">Admin Features</h2>
+
+    <div class="d-flex">
+        <!-- Left Panel: Employee List -->
+        <div class="card shadow flex-grow-1" style="max-width: 35%; height: 550px;">
+            <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0">Employee List</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group" id="employeeList" style="max-height: 450px; overflow-y: auto;"></ul>
+            </div>
+        </div>
+
+        <!-- Right Panel: Time Clock Features -->
+        <div class="card shadow flex-grow-1 ml-3" style="width: 70%;">
+            <div class="card-header bg-success text-white text-center">
+                <h5 class="mb-0">Time Clock Report</h5>
+            </div>
+            <div class="card-body">
+                <h4>Time Paid (Hrs): <span id="totalHours">0.00</span></h4>
+
+                <!-- Date Filters -->
+                <div class="d-flex mb-3">
+                    <div class="mr-4">
+                        <label for="startDate">Beginning Date:</label>
+                        <input type="date" id="startDate" class="form-control" />
+                    </div>
+                    <div class="ml-4">
+                        <label for="endDate">Ending Date:</label>
+                        <input type="date" id="endDate" class="form-control" />
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="text-center mb-3" style="margin-top: 20px;">
+                    <button class="btn btn-primary mx-2" style="padding: 10px 20px;" onclick="fetchEntries()">Generate Report</button>
+                    <button class="btn btn-white border-primary mx-2" style="padding: 10px 20px; color: #007bff;" onclick="addNewEntry()">Add New Entry</button>
+                </div>
+
+                <!-- Time Clock Entries Table -->
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Code -->
+<script>
+    let selectedEmployeeId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchEmployeeList();
+    });
+
+    function fetchEmployeeList() {
+        fetch('/api/timeclock/employees')
+            .then(response => response.json())
+            .then(data => {
+                const employeeList = document.getElementById('employeeList');
+                employeeList.innerHTML = "";
+
+                data.forEach(employee => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item employee-item';
+                    li.textContent = employee.employeeName;
+                    li.onclick = () => selectEmployee(employee.employeeId, li);
+                    employeeList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error fetching employee list:', error));
+    }
+
+    function selectEmployee(employeeId, element) {
+        selectedEmployeeId = employeeId;
+        document.getElementById('totalHours').textContent = "0.00";
+        document.querySelectorAll('.employee-item').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        fetchEntries();
+    }
+
+    function fetchEntries() {
+        if (!selectedEmployeeId) {
+            alert("Please select an employee first.");
+            return;
+        }
+
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+
+        let url = `/api/timeclock/entries?employeeId=${selectedEmployeeId}`;
+        if (startDate) url += `&startDate=${startDate}`;
+        if (endDate) url += `&endDate=${endDate}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                renderTable(data.data);
+            })
+            .catch(error => console.error("Error fetching entries:", error));
+    }
+
+    function renderTable(entries) {
+        const tableBody = document.getElementById("timeClockTableBody");
+        tableBody.innerHTML = "";
+
+        entries.forEach(entry => {
+            let row = document.createElement("tr");
+
+            let timeIn = new Date(entry.serverTimeIn).toLocaleString();
+            let timeOut = entry.serverTimeOut
+                ? new Date(entry.serverTimeOut).toLocaleString()
+                : "N/A";
+
+            row.innerHTML = `
+                <td>${entry.employeeName}</td>
+                <td>${entry.storeID}</td>
+                <td>${entry.rate ? entry.rate.toFixed(2) : "0.00"}</td>
+                <td>${timeIn}</td>
+                <td>${timeOut}</td>
+                <td>${entry.approved ? "Yes" : "No"}</td>
+                <td>${entry.approvedByName || "N/A"}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        calculateTotalHours(entries);
+    }
+
+    function calculateTotalHours(entries) {
+        let totalHours = entries.reduce((total, entry) => {
+            if (entry.serverTimeOut) {
+                let diff = (new Date(entry.serverTimeOut) - new Date(entry.serverTimeIn)) / 3600000;
+                total += diff;
+            }
+            return total;
+        }, 0);
+
+        document.getElementById('totalHours').textContent = totalHours.toFixed(2);
+    }
+
+    function addNewEntry() {
+        alert("Feature to add new entry will be implemented soon.");
+
+    }
+</script>
+
+<!-- CSS Styling -->
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .list-group-item:hover {
+        background-color: #f0f8ff;
+        cursor: pointer;
+    }
+
+    .list-group-item.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .d-flex {
+        display: flex;
+        gap: 15px;
+    }
+
+    
+</style>

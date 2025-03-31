@@ -1,0 +1,33 @@
+﻿@model Corral.Models.ErrorViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+</head>
+<body>
+    <h1>An error occurred</h1>
+
+    @if (Model.ShowRequestId)
+    {
+        <p>Request ID: @Model.RequestId</p>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <p><strong>Error Message:</strong> @Model.ErrorMessage</p>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.StackTrace))
+    {
+        <p><strong>Stack Trace:</strong> @Model.StackTrace</p>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ExceptionDetails))
+    {
+        <p><strong>Exception Details:</strong> @Model.ExceptionDetails</p>
+    }
+</body>
+</html>

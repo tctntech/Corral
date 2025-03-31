@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px; /* Reduced container size */
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #007bff;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Reduced gap between cards */
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            width: 200px; /* Smaller card size */
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+            /* Adjust Staff/Labor and Menu/Expenses sizes */
+            .card.large {
+                width: 220px;
+                height: 200px;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+            }
+
+            .card h3 {
+                font-size: 1.2rem; /* Reduced font size */
+                color: #333;
+                font-weight: 500;
+                margin-bottom: 8px;
+            }
+
+            .card a {
+                font-size: 0.9rem;
+                color: #007bff;
+                text-decoration: none;
+                display: block;
+                margin-top: 3px;
+                transition: color 0.3s ease;
+            }
+
+                .card a:hover {
+                    color: #0056b3;
+                }
+
+            /* Center single link in Misc card */
+            .card.single-link {
+                justify-content: center;
+            }
+
+        /* Button Styling */
+        .btn-main-menu {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+            text-transform: uppercase;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+            .btn-main-menu:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Centered Header -->
+        <div class="header">
+            <h1>Welcome to the Admin Dashboard</h1>
+        </div>
+
+        <div class="row">
+            <!-- Card 1: Reports -->
+            <div class="card">
+                <h3>Reports</h3>
+                <a href="#">Sales Reports</a>
+                <a href="#">Visitation Reports</a>
+                <a href="#">Comment Cards</a>
+            </div>
+
+            <!-- Card 2: Misc (centered content) -->
+            <div class="card single-link">
+                <h3>Misc</h3>
+                <a href="#">Buck Manager</a>
+            </div>
+
+            <!-- Card 3: Staff/Labor (adjusted size) -->
+            <div class="card large">
+                <h3>Staff/Labor</h3>
+               
+                <a href="/AdminDashboard/TimeClock" class="btn-link">Time Clock</a>
+                <a href="#">Labor</a>
+               
+                <a href="@Url.Action("Index", "User")" class="btn-link">Managers/Users</a>
+                <a href="#">Employee Registry</a>
+                <a href="#">Global Staff Registry</a>
+            </div>
+
+            <!-- Card 4: Menu/Expenses (adjusted size) -->
+            <div class="card large">
+                <h3>Menu/Expenses</h3>
+
+                <a href="@Url.Action("Dashboard", "ProductVendorView")" class="btn-link">Products/Vendors</a>
+
+               
+                <a href="#">CC Invoices</a>
+                <a href="#">Recipe Manager</a>
+                <a href="#">Invoice Manager</a>
+                <a href="#">Inventory</a>
+            </div>
+
+            <!-- Card 5: Instance Settings -->
+            <div class="card">
+                <h3>Instance Settings</h3>
+                <a href="#">View Settings</a>
+            </div>
+
+            <!-- Card 6: Store Location -->
+            <div class="card">
+                <h3>Store Location</h3>
+                <a href="#">View Location Info</a>
+            </div>
+        </div>
+
+        <!-- Centered Button at Bottom -->
+        <a href="/" class="btn-main-menu">Go to Main Menu</a>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

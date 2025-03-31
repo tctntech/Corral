@@ -1,0 +1,93 @@
+﻿@model Corral.Models.EditManagerViewModel
+
+@{
+    ViewData["Title"] = "Edit Manager";
+}
+
+<h2 class="mb-4">Edit Manager</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="ManagerID" />
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td class="text-right"><label asp-for="FirstName" class="form-label"></label></td>
+                    <td><input asp-for="FirstName" class="form-control" /></td>
+                    <td><span asp-validation-for="FirstName" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="MiddleName" class="form-label"></label></td>
+                    <td><input asp-for="MiddleName" class="form-control" /></td>
+                    <td><span asp-validation-for="MiddleName" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="LastName" class="form-label"></label></td>
+                    <td><input asp-for="LastName" class="form-control" /></td>
+                    <td><span asp-validation-for="LastName" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="Username" class="form-label"></label></td>
+                    <td><input asp-for="Username" class="form-control" /></td>
+                    <td><span asp-validation-for="Username" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="Active" class="form-label"></label></td>
+                    <td><input type="checkbox" asp-for="Active" class="form-check-input" /></td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="HomeStore" class="form-label">Home Store</label></td>
+                    <td>
+                        <select asp-for="HomeStore" asp-items="ViewBag.Stores" class="form-control">
+                            <option value="">-- Select Store --</option>
+                        </select>
+                    </td>
+                    <td><span asp-validation-for="HomeStore" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="GlobalStaffLinkStaffID" class="form-label">Global Staff ID</label></td>
+                    <td><input asp-for="GlobalStaffLinkStaffID" class="form-control" /></td>
+                    <td><span asp-validation-for="GlobalStaffLinkStaffID" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label asp-for="AccountActiveDate" class="form-label">Account Active Date</label></td>
+                    <td><input asp-for="AccountActiveDate" type="date" class="form-control" /></td>
+                    <td><span asp-validation-for="AccountActiveDate" class="text-danger"></span></td>
+                </tr>
+
+                <tr>
+                    <td class="text-right"><label class="form-label">Available Modules</label></td>
+                    <td>
+                        <select multiple asp-for="AvailableModules" class="form-control">
+                            @foreach (var module in Model.AvailableModules)
+                            {
+                                <option value="@module.Id">@module.Name</option>
+                            }
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

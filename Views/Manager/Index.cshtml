@@ -1,0 +1,92 @@
+﻿@model Corral.Models.Manager
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2>User Management</h2>
+<div class="container">
+    <div class="row">
+        <!-- Left Panel: User List -->
+        <div class="col-md-4">
+            <h3>Users</h3>
+            <ul id="userList" class="list-group">
+                <!-- User list will be populated dynamically -->
+            </ul>
+        </div>
+
+        <!-- Right Panel: User Details -->
+        <div class="col-md-8">
+            <h3>User Details</h3>
+            <form id="userForm">
+                <input type="hidden" id="userId" />
+                <div class="form-group">
+                    <label>First Name:</label>
+                    <input type="text" id="firstName" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Last Name:</label>
+                    <input type="text" id="lastName" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="email" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Role:</label>
+                    <select id="role" class="form-control">
+                        <option value="Admin">Admin</option>
+                        <option value="User">User</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="updateUser()">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadUsers();
+    });
+
+    function loadUsers() {
+        $.get("/api/user", function (data) {
+            $("#userList").empty();
+            data.forEach(user => {
+                $("#userList").append(<li class='list-group-item' onclick='loadUserDetails(${user.id})'>${user.firstName} ${user.lastName}</li>);
+            });
+        });
+    }
+
+    function loadUserDetails(id) {
+        $.get(/api/user/$ ,id, function (data) {
+            $("#userId").val(data.id);
+            $("#firstName").val(data.firstName);
+            $("#lastName").val(data.lastName);
+            $("#email").val(data.email);
+            $("#role").val(data.role);
+        });
+    }
+
+    function updateUser() {
+        var user = {
+            id: $("#userId").val(),
+            firstName: $("#firstName").val(),
+            lastName: $("#lastName").val(),
+            email: $("#email").val(),
+            role: $("#role").val()
+        };
+
+        $.ajax({
+            url: /api/user/$,{user.id},
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(user),
+            success: function () {
+                alert("User updated successfully!");
+                loadUsers();
+            }
+        });
+    }
+</script>

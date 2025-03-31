@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Products/Vendors";
+}
+
+<h2>Select an Option</h2>
+
+<!-- Box container for the buttons -->
+<div class="button-box">
+    <div class="button-container">
+        <button class="modern-button" onclick="location.href='/Products/AbsoluteProducts'">Absolute Products</button>
+        <button class="modern-button" onclick="location.href='/Products/VendorManagement'">Vendor Management</button>
+    </div>
+</div>
+
+<!-- Inline CSS for modern buttons -->
+<style>
+    /* Box container styling */
+    .button-box {
+        width: 80%; /* Adjust width as needed */
+        max-width: 600px; /* Maximum width */
+        margin: 30px auto; /* Centering the box */
+        padding: 20px;
+        border: 2px solid #ddd; /* Border around the box */
+        border-radius: 10px; /* Rounded corners for the box */
+        background-color: #f9f9f9; /* Light background for the box */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        text-align: center; /* Center content in the box */
+    }
+
+    /* Container for buttons */
+    .button-container {
+        display: flex;
+        justify-content: center; /* Center buttons horizontally */
+        gap: 20px; /*

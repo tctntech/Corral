@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <h2 class="text-center">Vendor Management</h2>
+        <div class="row">
+            <!-- Left Panel - Vendor List -->
+            <div class="col-12 col-md-4 border-end" style="height: 80vh; overflow-y: auto; display: flex; flex-direction: column;">
+                <h4>Vendor List</h4>
+
+                <!-- Search & Filter -->
+                <div class="mb-3">
+                    <input type="text" id="searchVendor" class="form-control" placeholder="Search by Vendor Name">
+                </div>
+
+                <div class="mb-3">
+                    <select id="activeFilter" class="form-select">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Not Active">Not Active</option>
+                    </select>
+                </div>
+
+                <!-- Vendor List Table -->
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vendor Name</th>
+                            <th>Date Added</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vendorTableBody">
+                        @foreach (var vendor in Model)
+                        {
+                            <tr data-vendor-id="@vendor.VendorID" data-status="@vendor.Active ? 'active' : 'inactive'">
+                                <td>@vendor.VendorID</td>
+                                <td>@vendor.VendorName</td>
+                                <td>@vendor.DateAdded</td>
+                                <td>@(vendor.Active ? "Active" : "Inactive")</td>
+                                <td>
+                                    
+                                    <button class="btn btn-sm btn-primary select-vendor-btn"
+                                            data-vendor-id="@vendor.VendorID">
+                                        Select
+                                    </button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Middle Panel - Vendor Details (Form Format) -->
+            <div class="col-12 col-md-4 border-end" style="height: 80vh; overflow-y: auto; display: flex; flex-direction: column;">
+                <h4>Vendor Details</h4>
+                <form id="vendorForm">
+                    <div class="mb-3">
+                        <label for="vendorName" class="form-label">Vendor Name</label>
+                        <input type="text" class="form-control" id="vendorName" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactName" class="form-label">Contact Name</label>
+                        <input type="text" class="form-control" id="contactName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city">
+                    </div>
+                    <div class="mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="state">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="fax" class="form-label">Fax</label>
+                        <input type="text" class="form-control" id="fax">
+                    </div>
+                    <div class="mb-3">
+                        <label for="terms" class="form-label">Terms</label>
+                        <input type="text" class="form-control" id="terms">
+                    </div>
+                    <div class="mb-3">
+                        <label for="comments" class="form-label">Comments</label>
+                        <textarea class="form-control" id="comments"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="active" class="form-label">Active</label>
+                        <select class="form-select" id="active">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Max Days in future where invoice can be posted</label>
+                        <input type="email" class="form-control" id="maxDaysToAllowFuturePost">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Right Panel - Additional Info -->
+            <div class="col-12 col-md-4">
+               
+                
+                
+                
+
+                    <!-- Store Exclusions -->
+                    <h5>Excluded Stores</h5>
+                    <ul class="list-group mb-3" id="excludedStores"></ul>
+
+                    <!-- Store Inclusions -->
+                    <h5>Included Stores</h5>
+                    <ul class="list-group" id="includedStores"></ul>
+
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Select vendor and fill details on button click
+                   $(document).ready(function () {
+            // Use event delegation to handle dynamically added elements
+            $("#vendorTableBody").on("click", ".select-vendor-btn", function () {
+                let vendorID = $(this).data("vendor-id");
+                if (vendorID) {
+                    selectVendor(vendorID);
+                }
+            });
+
+            // Function to load vendor details
+            function selectVendor(vendorID) {
+                $.ajax({
+                    url: `http://localhost:5050/api/Vendor/${vendorID}`, // Ensure the API URL is correct
+                    type: "GET",
+                    success: function (response) {
+                        console.log("Vendor Data:", response); // Debugging output
+
+                        if (response) {
+                            let vendor = response;
+
+                            // Fill form fields with vendor details, handling null values
+                            $("#vendorName").val(vendor.vendorName || "").prop("disabled", true);
+                            $("#contactName").val(vendor.contactName || "");
+                            $("#address").val(vendor.address || "");
+                            $("#city").val(vendor.city || "");
+                            $("#state").val(vendor.state || "");
+                            $("#phone").val(vendor.phone || "");
+                            $("#fax").val(vendor.fax || "");
+                            $("#terms").val(vendor.terms || "");
+                            $("#comments").val(vendor.comments || "");
+                            $("#active").val(vendor.active ? "true" : "false");
+                            $("#email").val(vendor.email || "");
+                            $("#maxDaysToAllowFuturePost").val(vendor.maxDaysToAllowFuturePost || "");
+                            // Populate Excluded Stores
+                            const excludedStores = $("#excludedStores").empty();
+                            if (response.storeVendorExclusions && response.storeVendorExclusions.length > 0) {
+                                response.storeVendorExclusions.forEach(store => {
+                                    excludedStores.append(`<li class="list-group-item">${store.storeID} - ${store.exclusionStoreCity}</li>`);
+                                });
+                            } else {
+                                excludedStores.append(`<li class="list-group-item text-muted">No Excluded Stores</li>`);
+                            }
+
+                            // Populate Included Stores
+                            const includedStores = $("#includedStores").empty();
+                            if (response.storeVendorInclusions && response.storeVendorInclusions.length > 0) {
+                                response.storeVendorInclusions.forEach(store => {
+                                    includedStores.append(`<li class="list-group-item">${store.storeID} - ${store.inclusionStoreCity}</li>`);
+                                });
+                            } else {
+                                includedStores.append(`<li class="list-group-item text-muted">No Included Stores</li>`);
+                            }
+
+                        } else {
+                            alert("No vendor details found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading vendor details:", status, error);
+                        alert("Failed to load vendor details.");
+                    }
+                });
+            }
+
+            // Search & filter functionality
+            $("#searchVendor").on("keyup", function () {
+                let searchText = $(this).val().toLowerCase();
+                $("#vendorTableBody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                });
+            });
+
+            $("#activeFilter").on("change", function () {
+                let selectedStatus = $(this).val().toLowerCase();
+                $("#vendorTableBody tr").each(function () {
+                    let status = $(this).find("td:eq(3)").text().toLowerCase();
+                    $(this).toggle(selectedStatus === "all" || status === selectedStatus);
+                });
+            });
+        });
+
+	</script>
+    </body>
+    </html>
+<!-- >
+    
+

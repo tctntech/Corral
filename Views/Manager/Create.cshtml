@@ -1,0 +1,27 @@
+﻿<h2>Create New Manager</h2>
+<form method="post" asp-action="Create">
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="userName" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Status</label>
+        <select name="active" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Not Active</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Home Store</label>
+        <input type="text" name="homeStore" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Global Staff Link ID</label>
+        <input type="number" name="globalStaffLinkStaffID" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
